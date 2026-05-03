@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>GenErase | CVPR Highlight</title>
+  <link rel="stylesheet" href="static/css/style.css" />
+</head>
+
+<body>
+  <main class="page">
+
+    <header class="hero">
+      <div class="venue">CVPR 2026 Highlight</div>
+
+      <h1>GenErase: Generalizable and Semantically-Aware Concept Erasure in Diffusion Models</h1>
+
+      <div class="authors">
+        <a href="https://scholar.google.com/citations?user=Wv35nO4AAAAJ&hl=en" target="_blank">Korada Sri Vardhana</a>
+        <a href="https://sites.google.com/iisc.ac.in/somabiswas" target="_blank">Soma Biswas</a>
+      </div>
+
+      <div class="affiliation">Indian Institute of Science, Bengaluru</div>
+
+      <nav class="nav-buttons">
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="static/papers/paper.pdf" target="_blank">Paper</a>
+        <a href="static/papers/supplement.pdf" target="_blank">Supplementary</a>
+      </nav>
+    </header>
+
+    <figure class="teaser-figure">
+      <img src="static/images/teaser_image.png" alt="GenErase teaser" />
+      <figcaption>
+        <strong>Target: Donald Trump.</strong> Rows show explicit target prompts, paraphrased target prompts,
+        and neutral non-target prompts. Columns compare different erasure methods. Existing methods either distort
+        non-target images or fail to reliably suppress paraphrased target references. GenErase achieves clean,
+        paraphrase-robust erasure with minimal non-target drift.
+      </figcaption>
+    </figure>
+
+    <section class="text-block">
+      <p>
+        Text-to-image diffusion models can generate highly realistic content, but they may also reproduce unsafe,
+        private, copyrighted, or restricted concepts learned from large-scale training data. Concept erasure aims to
+        suppress such target concepts while preserving the model’s ability to generate unrelated content faithfully.
+        This becomes especially challenging when the target is referred to indirectly through paraphrases, aliases,
+        or contextual descriptions rather than by its literal name.
+      </p>
+
+      <p>
+        GenErase addresses this challenge as a training-free, inference-time guard-railing method. Instead of modifying
+        model weights or retraining the diffusion model, GenErase intervenes directly in the cross-attention value space.
+        It identifies target-aligned semantic components, protects user-specified preserve concepts, and replaces erased
+        target directions with neutral anchor directions. This enables precise, interpretable erasure while maintaining
+        visual fidelity and preserving non-target concepts.
+      </p>
+    </section>
+
+    <section id="method" class="text-block">
+      <p>
+        GenErase is built around three geometric operations. First, a token-wise preserve projector defines a safe
+        semantic subspace, protecting related or important non-target concepts from unintended edits. Second, a hard
+        geometric gate activates erasure only when a token is strongly aligned with the target concept. Third, an
+        orthogonal erase-and-replace operation removes the target component and redistributes it along a neutral anchor
+        direction, preventing feature collapse and improving generation stability.
+      </p>
+
+      <figure class="main-figure method-figure">
+        <img src="static/images/method_overview.png" alt="GenErase method overview" />
+        <figcaption>
+          <strong>Overview of GenErase.</strong> GenErase constructs token-wise target, preserve, and anchor directions
+          in the cross-attention value space. During inference, it protects preserve concepts, gates edits using target
+          alignment, and replaces target-aligned components with neutral anchor directions.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section id="results" class="text-block">
+      <p>
+        GenErase achieves strong erasure while preserving unrelated visual semantics across identity erasure, object
+        erasure, and unsafe-content suppression. In single-celebrity erasure, GenErase obtains an average ESR of
+        <strong>81.83</strong> and the best average harmonic mean of ESR and PSR, with an HM of
+        <strong>40.22</strong>. On GenBench-40, GenErase achieves the lowest average failure rate of
+        <strong>22.70</strong>, demonstrating improved robustness to paraphrases and contextual descriptions. It also
+        scales to simultaneous erasure of <strong>50</strong> identities with only a small drop in harmonic mean.
+      </p>
+
+      <div class="results-gallery">
+
+        <figure class="result-pair">
+          <div class="pair-images">
+            <img src="static/images/identity_left.png" alt="Identity erasure before GenErase" />
+            <img src="static/images/identity_right.png" alt="Identity erasure after GenErase" />
+          </div>
+          <figcaption>
+            <strong>Identity erasure.</strong> Results before and after applying GenErase. The target identity
+            Donald Trump is suppressed while non-target identities and unrelated visual content remain preserved.
+            The first row shows direct prompts for Donald Trump, while the second and third rows show paraphrases:
+            “President of the United States of America” and “Husband of Melania Trump.”
+          </figcaption>
+        </figure>
+
+        <figure class="result-pair">
+          <div class="pair-images">
+            <img src="static/images/brinjal_left.png" alt="Object erasure before GenErase" />
+            <img src="static/images/brinjal_right.png" alt="Object erasure after GenErase" />
+          </div>
+          <figcaption>
+            <strong>Object erasure.</strong> Results before and after applying GenErase to the target object
+            brinjal. GenErase suppresses the target across both direct and paraphrased prompts while preserving
+            non-target objects and scene structure. Rows correspond to “Brinjal,” “Aubergine,” and “Eggplant.”
+          </figcaption>
+        </figure>
+
+        <figure class="result-pair compact-result">
+          <div class="pair-images">
+            <img src="static/images/nudity_left.png" alt="Nudity suppression before GenErase" />
+            <img src="static/images/nudity_right.png" alt="Nudity suppression after GenErase" />
+          </div>
+          <figcaption>
+            <strong>Nudity suppression.</strong> Results before and after applying GenErase. Unsafe visual content
+            is suppressed while the broader scene layout and non-target semantics remain largely intact.
+          </figcaption>
+        </figure>
+
+      </div>
+    </section>
+
+    <section id="bibtex" class="bibtex-block">
+      <h2>BibTeX</h2>
+      <pre><code>@inproceedings{korada2026generase,
+  title     = {GenErase: Generalizable and Semantically-Aware Concept Erasure in Diffusion Models},
+  author    = {Korada, Sri Vardhana and Biswas, Soma},
+  booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  year      = {2026}
+}</code></pre>
+    </section>
+
+  </main>
+</body>
+</html>
